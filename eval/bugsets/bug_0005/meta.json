@@ -1,0 +1,6 @@
+{
+  "id": "bug_0005",
+  "category": "type-conversion",
+  "description": "temperature.py 的 to_fahrenheit 结果被整除了，浮点小数部分丢失。修复 temperature.py，让 tests/test_temperature.py 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

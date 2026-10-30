@@ -1,0 +1,6 @@
+{
+  "id": "bug_0008",
+  "category": "boundary",
+  "description": "ranking.py 的 top_k 在 k 为负数时返回了多余的元素。修复 ranking.py，让 tests/test_ranking.py 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

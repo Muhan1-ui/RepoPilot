@@ -1,0 +1,6 @@
+{
+  "id": "bug_0013",
+  "category": "cross-file-decimal",
+  "description": "金额合计不精确：0.10 + 0.20 不等于 0.30，1.15 元会被输出成 1.14 元。修复源码让 tests 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

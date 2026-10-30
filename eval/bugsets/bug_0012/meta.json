@@ -1,0 +1,6 @@
+{
+  "id": "bug_0012",
+  "category": "cross-file-lru",
+  "description": "缓存写满后，新写入的请求查不到，重复请求会被重复处理；标记为 critical 的请求在连续请求后也会失去幂等。修复源码让 tests 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

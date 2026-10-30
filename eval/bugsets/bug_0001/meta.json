@@ -1,0 +1,6 @@
+{
+  "id": "bug_0001",
+  "description": "stats.py 的 median 对偶数长度列表返回错误值（应取中间两数的平均值）。修复 stats.py，让 tests/test_stats.py 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q",
+  "mock_script": "mock_script.json"
+}

@@ -1,0 +1,6 @@
+{
+  "id": "bug_0004",
+  "category": "exception",
+  "description": "scores.py 的 get_score 在名字不存在时抛 KeyError，按约定应返回 None。修复 scores.py，让 tests/test_scores.py 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

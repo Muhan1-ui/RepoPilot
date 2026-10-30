@@ -1,0 +1,18 @@
+[
+  {
+    "name": "read_file",
+    "args": {
+      "path": "stats.py"
+    }
+  },
+  {
+    "name": "apply_patch",
+    "args": {
+      "patch": "--- a/stats.py\n+++ b/stats.py\n@@ -13,4 +13,7 @@\n     if not xs:\n         raise ValueError(\"empty list\")\n     ordered = sorted(xs)\n-    return ordered[len(ordered) // 2]\n+    n = len(ordered)\n+    if n % 2:\n+        return ordered[n // 2]\n+    return (ordered[n // 2 - 1] + ordered[n // 2]) / 2\n"
+    }
+  },
+  {
+    "name": "run_tests",
+    "args": {}
+  }
+]

@@ -1,0 +1,23 @@
+[project]
+name = "repopilot"
+version = "0.0.1"
+description = "给 Python 仓库加一个失败单测，agent 自己定位、改代码、跑测试、再改"
+requires-python = ">=3.12"
+dependencies = ["openai>=1.40"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+repopilot = "repopilot.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

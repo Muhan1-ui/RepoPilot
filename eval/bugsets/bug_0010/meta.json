@@ -1,0 +1,6 @@
+{
+  "id": "bug_0010",
+  "category": "loop-condition",
+  "description": "threshold.py 的 first_above 返回的下标不对。修复 threshold.py，让 tests/test_threshold.py 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

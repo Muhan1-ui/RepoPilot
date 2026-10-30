@@ -1,0 +1,6 @@
+{
+  "id": "bug_0011",
+  "category": "cross-file-parsing",
+  "description": "从配置文本读取配置时，带空格的写法（如 'host = example.com'）会报 unknown config key，配置项无法正确装入。修复源码让 tests 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

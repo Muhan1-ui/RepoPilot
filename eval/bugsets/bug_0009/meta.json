@@ -1,0 +1,6 @@
+{
+  "id": "bug_0009",
+  "category": "type-conversion",
+  "description": "pricing.py 的 total_price 把字符串当数字相乘了。修复 pricing.py，让 tests/test_pricing.py 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

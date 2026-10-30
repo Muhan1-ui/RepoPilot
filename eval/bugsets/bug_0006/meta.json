@@ -1,0 +1,6 @@
+{
+  "id": "bug_0006",
+  "category": "loop-condition",
+  "description": "search.py 的 first_negative 返回的下标不对。修复 search.py，让 tests/test_search.py 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

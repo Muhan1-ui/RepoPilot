@@ -1,0 +1,6 @@
+{
+  "id": "bug_0003",
+  "category": "boundary",
+  "description": "lookup.py 的 safe_get 对负下标处理不对，越界时应返回 default。修复 lookup.py，让 tests/test_lookup.py 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

@@ -1,0 +1,6 @@
+{
+  "id": "bug_0002",
+  "category": "off-by-one",
+  "description": "seq.py 的 take_last 返回最后 n 个元素时数量不对。修复 seq.py，让 tests/test_seq.py 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

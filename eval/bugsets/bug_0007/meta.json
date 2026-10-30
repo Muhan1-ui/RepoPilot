@@ -1,0 +1,6 @@
+{
+  "id": "bug_0007",
+  "category": "off-by-one",
+  "description": "multiples.py 的 count_multiples 漏数了区间右端点。修复 multiples.py，让 tests/test_multiples.py 全绿；不要改测试。",
+  "test_cmd": "python -m pytest -q"
+}

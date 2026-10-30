@@ -1,0 +1,81 @@
+{
+  "run_id": "20261031-001241",
+  "started_at": "2026-10-31 00:12:41",
+  "model_mode": "real",
+  "model": "deepseek-flash",
+  "docker": false,
+  "max_steps": 8,
+  "environment": {
+    "model": "deepseek-flash",
+    "price_in_per_1m": 0.04,
+    "price_out_per_1m": 8.0
+  },
+  "summary": {
+    "passed": 1,
+    "total": 3,
+    "pass_rate": 0.3333,
+    "avg_steps_passed": 5,
+    "avg_steps_all": 7,
+    "total_prompt_tokens": 53393,
+    "total_completion_tokens": 8651,
+    "total_tokens": 62044,
+    "avg_tokens_per_task": 20681.3,
+    "total_cost": 0.07134372,
+    "avg_cost_per_task": 0.0238,
+    "max_steps_tasks": [
+      "bug_0012",
+      "bug_0013"
+    ],
+    "no_tool_calls_failed_tasks": [],
+    "error_tasks": [
+      "bug_0011",
+      "bug_0012",
+      "bug_0013"
+    ],
+    "tests_modified_tasks": []
+  },
+  "tasks": [
+    {
+      "task": "bug_0011",
+      "category": "cross-file-parsing",
+      "ok": true,
+      "steps": 5,
+      "reason": "tests_passed",
+      "prompt_tokens": 6706,
+      "completion_tokens": 396,
+      "cost": 0.0034362399999999997,
+      "duration_s": 7.94,
+      "error_steps": 1,
+      "tests_untouched": true,
+      "trace_path": "eval\\bugsets\\bug_0011\\runs\\20261031-001241\\trace.jsonl"
+    },
+    {
+      "task": "bug_0012",
+      "category": "cross-file-lru",
+      "ok": false,
+      "steps": 8,
+      "reason": "max_steps",
+      "prompt_tokens": 31709,
+      "completion_tokens": 6454,
+      "cost": 0.05290036,
+      "duration_s": 34.71,
+      "error_steps": 6,
+      "tests_untouched": true,
+      "trace_path": "eval\\bugsets\\bug_0012\\runs\\20261031-001241\\trace.jsonl"
+    },
+    {
+      "task": "bug_0013",
+      "category": "cross-file-decimal",
+      "ok": false,
+      "steps": 8,
+      "reason": "max_steps",
+      "prompt_tokens": 14978,
+      "completion_tokens": 1801,
+      "cost": 0.01500712,
+      "duration_s": 14.57,
+      "error_steps": 4,
+      "tests_untouched": true,
+      "trace_path": "eval\\bugsets\\bug_0013\\runs\\20261031-001241\\trace.jsonl"
+    }
+  ]
+}

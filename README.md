@@ -11,7 +11,7 @@
 Windows PowerShell（PyCharm 默认终端）：
 
 ```powershell
-git clone <你的仓库地址>; cd repopilot
+git clone https://github.com/Muhan1-ui/RepoPilot.git; cd repopilot
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -e . pytest openai python-dotenv
 .venv\Scripts\python.exe -m repopilot run --task eval/bugsets/bug_0001 --mock --max-steps 8
@@ -20,7 +20,7 @@ python -m venv .venv
 Git Bash / macOS / Linux：
 
 ```bash
-git clone <你的仓库地址> && cd repopilot
+git clone https://github.com/Muhan1-ui/RepoPilot.git && cd repopilot
 python -m venv .venv
 .venv/bin/python -m pip install -e . pytest openai python-dotenv      # Windows 用 .venv/Scripts/python.exe
 .venv/bin/python -m repopilot run --task eval/bugsets/bug_0001 --mock --max-steps 8

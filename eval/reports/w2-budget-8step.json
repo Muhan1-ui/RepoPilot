@@ -1,0 +1,48 @@
+{
+  "run_id": "20261031-004218",
+  "started_at": "2026-10-31 00:42:18",
+  "model_mode": "real",
+  "model": "deepseek-flash",
+  "docker": false,
+  "max_steps": 8,
+  "environment": {
+    "model": "deepseek-flash",
+    "price_in_per_1m": 0.04,
+    "price_out_per_1m": 8.0
+  },
+  "summary": {
+    "passed": 1,
+    "total": 1,
+    "pass_rate": 1.0,
+    "avg_steps_passed": 8,
+    "avg_steps_all": 8,
+    "total_prompt_tokens": 20579,
+    "total_completion_tokens": 3407,
+    "total_tokens": 23986,
+    "avg_tokens_per_task": 23986.0,
+    "total_cost": 0.02807916,
+    "avg_cost_per_task": 0.0281,
+    "max_steps_tasks": [],
+    "no_tool_calls_failed_tasks": [],
+    "error_tasks": [
+      "bug_0012"
+    ],
+    "tests_modified_tasks": []
+  },
+  "tasks": [
+    {
+      "task": "bug_0012",
+      "category": "cross-file-lru",
+      "ok": true,
+      "steps": 8,
+      "reason": "tests_passed",
+      "prompt_tokens": 20579,
+      "completion_tokens": 3407,
+      "cost": 0.02807916,
+      "duration_s": 21.72,
+      "error_steps": 3,
+      "tests_untouched": true,
+      "trace_path": "eval\\bugsets\\bug_0012\\runs\\20261031-004218\\trace.jsonl"
+    }
+  ]
+}

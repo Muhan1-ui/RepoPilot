@@ -15,7 +15,8 @@ class TraceWriter:
     def write(self, step: int, tool: str, args_digest: str, ok: bool,
               duration_ms: float, note: str = "", prompt_tokens: int = 0,
               completion_tokens: int = 0, breaker: str | None = None,
-              escalate: str | None = None) -> None:
+              escalate: str | None = None,
+              verify_rerun: str | None = None) -> None:
         """追加一行 trace；tokens 记在该步第一行（模型一轮的消耗）。"""
         rec = {"ts": round(time.time(), 3), "step": step, "tool": tool,
                "args_digest": str(args_digest)[:200], "ok": ok,
@@ -26,5 +27,7 @@ class TraceWriter:
             rec["breaker"] = breaker
         if escalate:
             rec["escalate"] = escalate
+        if verify_rerun:
+            rec["verify_rerun"] = verify_rerun
         with open(self.path, "a", encoding="utf-8") as f:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")

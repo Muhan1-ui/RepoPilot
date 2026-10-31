@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 from .tools import TOOLS, dispatch
+from .tools.run_tests import SHELL_META_ERROR, run_tests
 from .trace import TraceWriter
 
 MAX_STEPS_DEFAULT = 8
@@ -75,6 +76,28 @@ def _exit_code(result: str) -> int | None:
     return int(m.group(1)) if m else None
 
 
+FALSE_POSITIVE_DETAIL = "模型命令返回 0 但全量复核失败"
+
+
+def _verify_pass(repo: str, test_cmd: str, docker: bool, trace: TraceWriter | None,
+                 step: int) -> tuple[bool, str]:
+    """用题目原始 test_cmd 无条件复跑一次，返回 ``(是否通过, 输出首行)``。
+
+    这条路径不经过模型、也不做 shell 元字符过滤：即使模型用别的方式伪造了
+    退出码 0，也只有原始 test_cmd 的退出码 0 才算通过。
+    """
+    t0 = time.perf_counter()
+    result = run_tests(test_cmd, repo=repo, docker=docker, trusted=True)
+    passed = _exit_code(result) == 0
+    first = result.splitlines()[0][:120] if result else ""
+    if trace:
+        trace.write(step, "verify_rerun",
+                    json.dumps({"cmd": test_cmd}, ensure_ascii=False),
+                    passed, (time.perf_counter() - t0) * 1000, first,
+                    verify_rerun="passed" if passed else "failed")
+    return passed, first
+
+
 def _record(trace: TraceWriter | None, step: int, tool: str, args: dict,
             result: str, duration_ms: float, prompt_tokens: int = 0,
             completion_tokens: int = 0, breaker: str | None = None,
@@ -99,6 +122,7 @@ def run_task(repo, model, test_cmd: str, max_steps: int = MAX_STEPS_DEFAULT,
                                     f"测试命令：{test_cmd}\n仓库根目录：{repo}"},
     ]
     ok, reason, steps = False, "max_steps", 0
+    detail = None
     streak_kind, streak_n, reminded = None, 0, 0
     try:
         for step in range(1, max_steps + 1):
@@ -129,6 +153,11 @@ def run_task(repo, model, test_cmd: str, max_steps: int = MAX_STEPS_DEFAULT,
                         escalate=step_meta.get("escalate"))
                 ok = _exit_code(result) == 0
                 reason = "tests_passed" if ok else "no_tool_calls_failed"
+                if ok:
+                    verified, first = _verify_pass(repo, test_cmd, docker, trace, step)
+                    if not verified:
+                        ok, reason = False, "false_positive_blocked"
+                        detail = f"{FALSE_POSITIVE_DETAIL}：{first}"
                 break
             passed = False
             for i, call in enumerate(calls):
@@ -140,10 +169,13 @@ def run_task(repo, model, test_cmd: str, max_steps: int = MAX_STEPS_DEFAULT,
                     result = dispatch(name, args, repo=repo, docker=docker)
                 except Exception as e:
                     result = f"ERROR: {e}"
+                breaker = step_meta.get("breaker") if i == 0 else None
+                if name == "run_tests" and result == SHELL_META_ERROR:
+                    breaker = "shell_meta"
                 _record(trace, step, name, args, result, (time.perf_counter() - t0) * 1000,
                         prompt_tokens=prompt_tokens if i == 0 else 0,
                         completion_tokens=completion_tokens if i == 0 else 0,
-                        breaker=step_meta.get("breaker") if i == 0 else None,
+                        breaker=breaker,
                         escalate=step_meta.get("escalate") if i == 0 else None)
                 messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
                 kind = classify_error(result)
@@ -154,11 +186,20 @@ def run_task(repo, model, test_cmd: str, max_steps: int = MAX_STEPS_DEFAULT,
                 else:
                     streak_kind, streak_n, reminded = kind, 1, 0
                 if name == "run_tests" and _exit_code(result) == 0:
-                    ok, reason, passed = True, "tests_passed", True
+                    verified, first = _verify_pass(repo, test_cmd, docker, trace, step)
+                    if verified:
+                        ok, reason, passed = True, "tests_passed", True
+                    else:
+                        # 模型命令返回 0 但原始 test_cmd 仍红：判为假阳性并终止。
+                        ok, reason, passed = False, "false_positive_blocked", True
+                        detail = f"{FALSE_POSITIVE_DETAIL}：{first}"
                     break
             if passed:
                 break
     except Exception as e:
         reason = f"error: {e}"
-    return {"ok": ok, "steps": steps, "reason": reason,
-            "trace_path": str(trace_path) if trace_path else None}
+    out = {"ok": ok, "steps": steps, "reason": reason,
+           "trace_path": str(trace_path) if trace_path else None}
+    if detail:
+        out["detail"] = detail
+    return out

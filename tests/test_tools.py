@@ -86,6 +86,16 @@ def test_run_tests_tail_and_sandbox(tmp_path):
     assert cmd[-1] == "python -m pytest -q"
 
 
+def test_run_tests_rejects_pipe_that_swallows_exit_code(tmp_path):
+    out = run_tests(f"{sys.executable} -m pytest -q | tail -60", repo=str(tmp_path))
+    assert out.startswith("ERROR:") and "元字符" in out
+
+
+def test_run_tests_rejects_semicolon(tmp_path):
+    out = run_tests(f"{sys.executable} -m pytest -q; true", repo=str(tmp_path))
+    assert out.startswith("ERROR:") and "元字符" in out
+
+
 def test_run_tests_failure_returns_structured_feedback(tmp_path):
     (tmp_path / "test_two.py").write_text(
         "def test_a():\n    assert 1 == 2\n\n\ndef test_b():\n    assert [1, 2] == [1, 3]\n",

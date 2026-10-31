@@ -1,0 +1,9 @@
+{
+  "id": "real_0001",
+  "repo_url": "https://github.com/tkem/cachetools",
+  "commit_hash": "2609f068f909197d46c1ad84083fb3b1226db3de",
+  "head_hash": "e7104dd52bfe0e3aced6f3439fb6ed4d9c8ff52a",
+  "category": "real",
+  "description": "使用 @cachedmethod 装饰的方法对象在 pickle / copy.deepcopy 时抛出 PicklingError（实例访问和类访问两种用法都会触发）。修复源码让仓库测试全绿；不要修改测试。",
+  "test_cmd": "python -m pytest -q"
+}

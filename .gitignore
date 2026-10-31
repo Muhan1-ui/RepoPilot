@@ -9,3 +9,6 @@ traces/
 runs/
 eval/bugsets/*/repo/
 eval/bugsets/*/runs/
+
+# 私人笔记（口述稿）不入库
+docs/interview-script.md

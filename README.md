@@ -8,17 +8,25 @@
 
 需要 Python ≥ 3.12（实测 3.14.9）。仓库里没有 `requirements.txt`，按下面几行照抄即可。`--mock` 用预设脚本代替真实模型，全程不联网。
 
+Windows PowerShell（PyCharm 默认终端）：
+
+```powershell
+git clone <你的仓库地址>; cd repopilot
+python -m venv .venv
+.venv\Scripts\python.exe -m pip install -e . pytest openai python-dotenv
+.venv\Scripts\python.exe -m repopilot run --task eval/bugsets/bug_0001 --mock --max-steps 8
+```
+
+Git Bash / macOS / Linux：
+
 ```bash
 git clone <你的仓库地址> && cd repopilot
 python -m venv .venv
-# Windows: .venv/Scripts/activate
-# macOS/Linux: source .venv/bin/activate
-pip install -e . pytest openai python-dotenv
-
-python -m repopilot run --task eval/bugsets/bug_0001 --mock --max-steps 8
+.venv/bin/python -m pip install -e . pytest openai python-dotenv      # Windows 用 .venv/Scripts/python.exe
+.venv/bin/python -m repopilot run --task eval/bugsets/bug_0001 --mock --max-steps 8
 ```
 
-`pip install -e .` 会把 `repopilot` 装进当前 venv，`python -m repopilot --help` 在任意目录都能跑。但 `--task` 是相对当前目录解析的：离开仓库目录后要传绝对路径，例如 `python -m repopilot run --task D:/repopilot/eval/bugsets/bug_0001 --mock`。
+`pip install -e .` 会把 `repopilot` 装进当前 venv，之后用 venv 里的 python 在任意目录都能跑 `python -m repopilot --help`。但 `--task` 是相对当前目录解析的：离开仓库目录后要传绝对路径，例如 `.venv\Scripts\python.exe -m repopilot run --task D:/repopilot/eval/bugsets/bug_0001 --mock`。
 
 预期输出（第一行固定，trace 路径带时间戳）：
 
@@ -29,21 +37,50 @@ trace=D:\repopilot\eval\bugsets\bug_0001\runs\<timestamp>\trace.jsonl
 
 跑完后可以打开这条 trace，看到每一步调用了哪个工具、耗时、token 和失败摘要。`--mock` 不产生费用，也不需要 `.env`。
 
+### 常见坑
+
+- PowerShell 不支持 `A && B`（7.0+ 才支持），用 `;` 或分两行。
+- 不要激活 venv：`.venv\Scripts\Activate.ps1` 常被执行策略拦截（"在此系统上禁止运行脚本"），直接用 `.venv\Scripts\python.exe` 最稳。
+- `--task` 是相对当前目录解析的，离开仓库目录要传绝对路径，例如 `--task D:/repopilot/eval/bugsets/bug_0001`。
+- 必须能读到 `pyproject.toml`：请在仓库根目录执行，不要在 `eval/` 或 `src/` 子目录下跑。
+
 ## 3. 真实评测怎么跑
+
+Windows PowerShell：
+
+```powershell
+Copy-Item .env.example .env
+.venv\Scripts\python.exe eval/run_eval.py --model real --max-steps 12 --no-docker
+```
+
+Git Bash / macOS / Linux：
 
 ```bash
 cp .env.example .env
-# 编辑 .env，至少填：
-#   LLM_API_KEY / LLM_BASE_URL / LLM_MODEL
-#   LLM_PRICE_IN_PER_1M / LLM_PRICE_OUT_PER_1M（元/百万 token；不填则成本显示 n/a）
-python eval/run_eval.py --model real --max-steps 12 --no-docker
+.venv/bin/python eval/run_eval.py --model real --max-steps 12 --no-docker
+```
+
+然后编辑 `.env`，至少填：
+
+```text
+LLM_API_KEY / LLM_BASE_URL / LLM_MODEL
+LLM_PRICE_IN_PER_1M / LLM_PRICE_OUT_PER_1M（元/百万 token；不填则成本显示 n/a）
 ```
 
 `--no-docker` 表示用本机 subprocess 跑测试。要启用容器隔离，先构建镜像，再把 `--no-docker` 换成 `--docker`：
 
+Windows PowerShell：
+
+```powershell
+docker build -f docker/Dockerfile -t repopilot-sandbox:pytest9 .
+.venv\Scripts\python.exe eval/run_eval.py --model real --max-steps 12 --docker
+```
+
+Git Bash / macOS / Linux：
+
 ```bash
 docker build -f docker/Dockerfile -t repopilot-sandbox:pytest9 .
-python eval/run_eval.py --model real --max-steps 12 --docker
+.venv/bin/python eval/run_eval.py --model real --max-steps 12 --docker
 ```
 
 容器参数是 `--network=none --memory=1g --cpus=1`，只挂载被测仓库目录。`--only <task_id>` 可以只跑单题，`--report-name` 指定报告文件名。
